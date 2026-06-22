@@ -1,708 +1,873 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NJL2L Dashboard — Megan Tenery</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green:#16a34a; --green-bg:#dcfce7;
-    --amber:#d97706; --amber-bg:#fef3c7;
-    --blue:#2563eb;  --blue-bg:#dbeafe;
-    --red:#dc2626;   --red-bg:#fee2e2;
-    --gray:#64748b;  --gray-bg:#f1f5f9;
-    --slate:#0f172a; --slate2:#1e293b;
-    --muted:#64748b; --border:#e2e8f0;
-    --card-bg:#ffffff; --page-bg:#f8fafc;
-    --accent:#1d4ed8;
-    --radius:10px;
-    --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+    --navy: #1a2744;
+    --navy-mid: #243156;
+    --blue-accent: #2d5be3;
+    --blue-light: #e8edf8;
+    --green: #1a7a4a;
+    --green-light: #e6f4ed;
+    --amber: #b45309;
+    --amber-light: #fef3c7;
+    --red: #b91c1c;
+    --red-light: #fee2e2;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --border: #e5e7eb;
+    --white: #ffffff;
+    --text: #111827;
+    --text-mid: #374151;
   }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',system-ui,sans-serif;font-size:14px;line-height:1.6;color:var(--slate);background:var(--page-bg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  a{color:var(--accent);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .mono{font-family:'DM Mono',monospace;font-size:12px}
-
-  /* Layout */
-  .page{max-width:1120px;margin:0 auto;padding:24px 20px 48px}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-
-  /* Header */
-  .header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);border-radius:14px;padding:28px 32px 24px;margin-bottom:20px;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
-  .header-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:2px 12px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
-  .header h1{font-size:26px;font-weight:700;margin-bottom:4px}
-  .header-sub{font-size:13px;color:rgba(255,255,255,.75);margin-bottom:12px}
-  .header-meta{display:flex;flex-wrap:wrap;gap:16px}
-  .header-meta-item{font-size:12px;color:rgba(255,255,255,.7)}
-  .header-meta-item strong{color:#fff;display:block;font-size:13px}
-  .header-right{text-align:right;flex-shrink:0}
-  .header-right .lbl{font-size:10px;color:rgba(255,255,255,.55);margin-bottom:2px;margin-top:8px}
-  .mono-val{font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,.9)}
-
-  /* Cards */
-  .card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
-  .card-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-  .metric-val{font-size:28px;font-weight:700;color:var(--slate);line-height:1.1}
-  .metric-sub{font-size:11px;color:var(--muted);margin-top:3px}
-  .metric-icon{font-size:22px;margin-bottom:8px}
-
-  /* Progress */
-  .progress-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px}
-  .progress-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
-  .progress-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .progress-pct{font-size:22px;font-weight:700;color:var(--accent)}
-  .progress-track{height:12px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:8px}
-  .progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#1d4ed8,#3b82f6)}
-
-  /* Section headers */
-  .section-header{margin:24px 0 12px;display:flex;align-items:center;gap:8px}
-  .section-header h2{font-size:13px;font-weight:600;color:var(--slate2);letter-spacing:.01em;white-space:nowrap}
-  .section-divider{flex:1;height:1px;background:var(--border)}
-
-  /* Profile */
-  .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}
-  .profile-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1px}
-  .profile-value{font-size:13px;color:var(--slate)}
-
-  /* Badges */
-  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px}
-  .badge-green{background:var(--green-bg);color:var(--green)}
-  .badge-amber{background:var(--amber-bg);color:var(--amber)}
-  .badge-blue{background:var(--blue-bg);color:var(--blue)}
-  .badge-red{background:var(--red-bg);color:var(--red)}
-  .badge-gray{background:var(--gray-bg);color:var(--gray)}
-  .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
-  .dot-green{background:var(--green)}.dot-amber{background:var(--amber)}.dot-blue{background:var(--blue)}.dot-red{background:var(--red)}.dot-gray{background:#cbd5e1}
-
-  /* Timeline */
-  .timeline{position:relative;padding-left:24px}
-  .timeline-line{position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--border)}
-  .tl-item{position:relative;padding:0 0 18px 20px}
-  .tl-item:last-child{padding-bottom:0}
-  .tl-dot-wrap{position:absolute;left:-8px;top:3px;width:16px;height:16px;display:flex;align-items:center;justify-content:center}
-  .tl-dot{width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #e2e8f0}
-  .tl-heading{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px}
-  .tl-title{font-size:13px;font-weight:600}
-  .tl-date{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
-  .tl-desc{font-size:12px;color:var(--muted);line-height:1.5}
-
-  /* Checklist */
-  .checklist{display:flex;flex-direction:column;gap:7px}
-  .check-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:7px;background:var(--page-bg);border:1px solid var(--border)}
-  .check-left{display:flex;align-items:center;gap:8px}
-  .check-name{font-size:12px;font-weight:500}
-  .check-detail{font-size:10px;color:var(--muted);margin-top:1px;font-family:'DM Mono',monospace}
-
-  /* Hours */
-  .hour-row{margin-bottom:13px}
-  .hour-row:last-child{margin-bottom:0}
-  .hour-label-row{display:flex;justify-content:space-between;margin-bottom:4px}
-  .hour-label{font-size:12px;font-weight:500}
-  .hour-count{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace}
-  .hour-track{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden}
-  .hour-fill{height:100%;border-radius:99px}
-
-  /* Action items */
-  .action-list{display:flex;flex-direction:column;gap:10px}
-  .action-item{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:8px;border-left:3px solid transparent}
-  .action-item.red{background:#fff5f5;border-color:var(--red)}
-  .action-item.amber{background:#fffbeb;border-color:var(--amber)}
-  .action-item.blue{background:#eff6ff;border-color:var(--blue)}
-  .action-item.gray{background:var(--gray-bg);border-color:#cbd5e1}
-  .action-title{font-size:13px;font-weight:600;margin-bottom:2px}
-  .action-desc{font-size:12px;color:var(--muted)}
-  .action-due{font-size:10px;font-family:'DM Mono',monospace;margin-top:3px}
-  .action-due.red{color:var(--red)}.action-due.amber{color:var(--amber)}.action-due.blue{color:var(--blue)}
-
-  /* Footer */
-  .footer{margin-top:32px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted)}
-  .footer strong{color:var(--slate)}
-
-  /* ARP panel */
-  .arp-col{padding:0 16px;border-right:1px solid var(--border)}
-  .arp-col:first-child{padding-left:0}
-  .arp-col:last-child{border-right:none}
-  .arp-barrier{padding:7px 10px;background:var(--amber-bg);border-radius:7px;border-left:3px solid var(--amber);font-size:12px;font-weight:500;margin-bottom:6px}
-  .arp-point{font-size:12px;color:var(--muted);line-height:1.7;padding-left:2px}
-
-  @media print{
-    body{background:white}
-    .page{padding:12px}
-    .card,.progress-wrap{break-inside:avoid;box-shadow:none}
-    .grid-4{grid-template-columns:repeat(2,1fr)}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f2f7;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
   }
-  @media(max-width:640px){
-    .grid-4{grid-template-columns:repeat(2,1fr)}
-    .grid-3,.grid-2{grid-template-columns:1fr}
-    .header{flex-direction:column}
-    .header-right{text-align:left}
-    .profile-grid{grid-template-columns:1fr}
-    .arp-col{padding:12px 0;border-right:none;border-bottom:1px solid var(--border)}
-    .arp-col:last-child{border-bottom:none}
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: white;
+    padding: 28px 32px 24px;
+    border-bottom: 3px solid var(--blue-accent);
   }
+  .header-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #94a3c0;
+    margin-bottom: 6px;
+  }
+  .header-name {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .header-subtitle {
+    font-size: 13px;
+    color: #b0bdd4;
+    margin-bottom: 18px;
+  }
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .header-meta-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .header-meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7a8fb0;
+    margin-bottom: 2px;
+  }
+  .header-meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+
+  /* STATUS BADGE */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .progress-bar-track {
+    background: var(--gray-light);
+    border-radius: 6px;
+    height: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-accent), var(--green));
+    border-radius: 6px;
+    width: 83%;
+    transition: width 0.5s;
+  }
+  .progress-markers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--gray);
+  }
+  .progress-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid;
+  }
+  .pill-green { background: var(--green-light); color: var(--green); border-color: #a7d4b8; }
+  .pill-blue { background: var(--blue-light); color: var(--blue-accent); border-color: #b0c4f0; }
+  .pill-amber { background: var(--amber-light); color: var(--amber); border-color: #fcd34d; }
+
+  /* STAT CARDS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .stat-icon { font-size: 20px; margin-bottom: 8px; }
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+  .stat-card.green { border-left: 3px solid var(--green); }
+  .stat-card.blue  { border-left: 3px solid var(--blue-accent); }
+  .stat-card.amber { border-left: 3px solid var(--amber); }
+
+  /* SECTION HEADERS */
+  .section-header {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 6px;
+    margin: 28px 0 16px;
+  }
+
+  /* TWO COLUMN LAYOUT */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* PROFILE CARD */
+  .profile-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .profile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .profile-row:last-child { border-bottom: none; }
+  .profile-key { color: var(--gray); font-weight: 500; flex: 0 0 140px; }
+  .profile-val { color: var(--text); font-weight: 600; text-align: right; }
+
+  /* HOUR TRACKER */
+  .hour-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .hour-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .hour-row:last-child { border-bottom: none; }
+  .hour-label { color: var(--text-mid); }
+  .hour-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-blue  { background: var(--blue-light); color: var(--blue-accent); }
+  .badge-gray  { background: var(--gray-light); color: var(--gray); }
+
+  /* MILESTONE TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .milestone {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .milestone-dot {
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-weight: 700;
+  }
+  .dot-green  { background: var(--green); }
+  .dot-blue   { background: var(--blue-accent); }
+  .dot-amber  { background: var(--amber); }
+  .dot-gray   { background: #d1d5db; }
+
+  .milestone-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .milestone-card.complete { border-left: 3px solid var(--green); }
+  .milestone-card.in-progress { border-left: 3px solid var(--blue-accent); }
+  .milestone-card.upcoming { border-left: 3px solid #d1d5db; }
+
+  .milestone-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .milestone-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    flex: 1;
+  }
+  .milestone-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+  .ms-complete { background: var(--green-light); color: var(--green); }
+  .ms-progress  { background: var(--blue-light); color: var(--blue-accent); }
+  .ms-future    { background: var(--gray-light); color: var(--gray); }
+
+  .milestone-date {
+    font-size: 11px;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .milestone-note {
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+  .milestone-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+    margin: 20px 0 10px;
+    padding-left: 4px;
+  }
+
+  /* CHECKLIST */
+  .checklist-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .checklist-group-header {
+    background: var(--navy);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+  }
+  .checklist-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .checklist-row:last-child { border-bottom: none; }
+  .checklist-title { color: var(--text-mid); flex: 1; }
+  .checklist-date {
+    font-size: 11px;
+    color: var(--gray);
+    margin: 0 12px;
+  }
+  .check-icon {
+    font-size: 13px;
+    width: 22px;
+    text-align: center;
+  }
+
+  /* ACTION ITEMS */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .action-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-left: 4px solid;
+    padding: 16px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .action-card.urgent { border-left-color: var(--red); }
+  .action-card.moderate { border-left-color: var(--amber); }
+  .action-card.ongoing { border-left-color: var(--blue-accent); }
+  .action-card.future { border-left-color: #d1d5db; }
+  .action-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+  .action-desc { font-size: 12px; color: var(--text-mid); margin-bottom: 8px; line-height: 1.5; }
+  .action-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tag-urgent   { background: #fee2e2; color: var(--red); }
+  .tag-moderate { background: var(--amber-light); color: var(--amber); }
+  .tag-ongoing  { background: var(--blue-light); color: var(--blue-accent); }
+  .tag-future   { background: var(--gray-light); color: var(--gray); }
+
+  /* ARP SECTION */
+  .arp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 800px) { .arp-grid { grid-template-columns: 1fr; } }
+  .arp-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .arp-card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--blue-light);
+  }
+  .arp-item {
+    font-size: 12px;
+    color: var(--text-mid);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+  }
+  .arp-item:last-child { border-bottom: none; }
+  .arp-check { color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .arp-check-empty { color: #d1d5db; flex-shrink: 0; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--navy);
+    color: #94a3c0;
+    text-align: center;
+    padding: 18px 16px;
+    font-size: 12px;
+    margin-top: 40px;
+  }
+  .footer strong { color: #e2e8f0; }
 </style>
 </head>
 <body>
-<div class="page">
 
-<!-- ══ HEADER ══ -->
+<!-- HEADER -->
 <div class="header">
-  <div class="header-left">
-    <div class="header-badge">NJL2L Principal Residency · NJPSA · PT-11067</div>
-    <h1>Ms. Megan Tenery</h1>
-    <div class="header-sub">Assistant Director of Curriculum &nbsp;·&nbsp; Robbinsville School District, Mercer County, NJ</div>
-    <div class="header-meta">
-      <div class="header-meta-item"><strong>Robbinsville School District #5510</strong>District / K-12 Suburban Public</div>
-      <div class="header-meta-item"><strong>Cohort 2024–2026</strong>Program Term PT-11067</div>
-      <div class="header-meta-item"><strong>Jermaine Kamau</strong>Mentor</div>
-      <div class="header-meta-item"><strong>Year 2 — Month 20 Zone</strong>Current Status</div>
+  <div class="header-eyebrow">NJL2L Principal Residency · NJPSA · PT-11067</div>
+  <div class="header-name">Ms. Megan Tenery</div>
+  <div class="header-subtitle">Assistant Director of Curriculum · Robbinsville School District, Mercer County, NJ</div>
+  <div class="header-meta">
+    <div class="header-meta-item">
+      <span class="header-meta-label">District</span>
+      <span class="header-meta-value">Robbinsville SD #5510</span>
+    </div>
+    <div class="header-meta-item">
+      <span class="header-meta-label">Cohort</span>
+      <span class="header-meta-value">2024–2026</span>
+    </div>
+    <div class="header-meta-item">
+      <span class="header-meta-label">Mentor</span>
+      <span class="header-meta-value">Jermaine Kamau</span>
+    </div>
+    <div class="header-meta-item">
+      <span class="header-meta-label">Tracking #</span>
+      <span class="header-meta-value">80018877</span>
+    </div>
+    <div class="header-meta-item">
+      <span class="header-meta-label">NJ CE License #</span>
+      <span class="header-meta-value">00728720</span>
+    </div>
+    <div class="header-meta-item">
+      <span class="header-meta-label">Last Updated</span>
+      <span class="header-meta-value">June 22, 2026</span>
     </div>
   </div>
-  <div class="header-right">
-    <div class="lbl">Last Updated</div>
-    <div class="mono-val">June 5, 2026</div>
-    <div class="lbl">Tracking #</div>
-    <div class="mono-val">80018877</div>
-    <div class="lbl">NJ CE License #</div>
-    <div class="mono-val">00728720</div>
-    <div class="lbl">Registration Date</div>
-    <div class="mono-val">Sep 20, 2024</div>
-  </div>
+  <div class="status-badge">✓ Year 2 — Month 20 Evaluations Complete</div>
 </div>
 
-<!-- ══ PROGRAM PROGRESS ══ -->
-<div class="progress-wrap">
-  <div class="progress-header">
-    <span class="progress-title">24-Month Program Progress — Oct 2024 → Oct 2026</span>
-    <span class="progress-pct">~79%</span>
-  </div>
-  <div class="progress-track">
-    <div class="progress-fill" style="width:79%"></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:8px;">
-    <span>Start · Oct 9, 2024</span>
-    <span style="color:var(--accent);font-weight:600;">▲ Now · ~Month 20</span>
-    <span>End · Oct 2026</span>
-  </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;">
-    <span class="badge badge-green">✓ Year 1 Complete</span>
-    <span class="badge badge-green">✓ Evals 1–3 Complete</span>
-    <span class="badge badge-amber">◐ ARP Implementation Active</span>
-    <span class="badge badge-blue">Eval #4 Next Milestone</span>
-    <span class="badge badge-gray">~5 Months Remaining</span>
-  </div>
-</div>
+<div class="main">
 
-<!-- ══ METRIC CARDS ══ -->
-<div class="grid-4" style="margin-bottom:16px;">
-  <div class="card">
-    <div class="metric-icon">📅</div>
-    <div class="card-title">Program Month</div>
-    <div class="metric-val">~Mo. 20</div>
-    <div class="metric-sub">Quarter 7 · Year 2</div>
-  </div>
-  <div class="card">
-    <div class="metric-icon">⏱</div>
-    <div class="card-title">Year 2 Hours Required</div>
-    <div class="metric-val">29 hrs</div>
-    <div class="metric-sub">Min. contact hours · Year 2</div>
-  </div>
-  <div class="card">
-    <div class="metric-icon">📋</div>
-    <div class="card-title">Next Formative Due</div>
-    <div class="metric-val" style="font-size:20px;">Eval #4</div>
-    <div class="metric-sub">Month 20 · ARP Focus · NOW</div>
-  </div>
-  <div class="card">
-    <div class="metric-icon">💰</div>
-    <div class="card-title">Mentor Stipend</div>
-    <div class="metric-val" style="font-size:18px;">Invoice Ready</div>
-    <div class="metric-sub">Submit via Sample Invoice Template</div>
-  </div>
-</div>
-
-<!-- ══ PROFILE + HOURS ══ -->
-<div class="grid-2" style="margin-bottom:0;">
-
-  <div class="card">
-    <div class="card-title">Resident Profile — Full Record</div>
-    <div class="profile-grid">
-      <div>
-        <div class="profile-label">Full Name</div>
-        <div class="profile-value">Ms. Megan Tenery</div>
-      </div>
-      <div>
-        <div class="profile-label">Date of Birth</div>
-        <div class="profile-value mono">January 16, 1983</div>
-      </div>
-      <div>
-        <div class="profile-label">Position / Title</div>
-        <div class="profile-value">Assistant Director of Curriculum</div>
-      </div>
-      <div>
-        <div class="profile-label">Date of Hire</div>
-        <div class="profile-value mono">July 1, 2024</div>
-      </div>
-      <div>
-        <div class="profile-label">Tracking #</div>
-        <div class="profile-value mono">80018877</div>
-      </div>
-      <div>
-        <div class="profile-label">NJ CE License #</div>
-        <div class="profile-value mono">00728720</div>
-      </div>
-      <div>
-        <div class="profile-label">Program Term</div>
-        <div class="profile-value mono">PT-11067</div>
-      </div>
-      <div>
-        <div class="profile-label">Start Date</div>
-        <div class="profile-value mono">Oct 9, 2024</div>
-      </div>
-      <div>
-        <div class="profile-label">Cohort</div>
-        <div class="profile-value">NJL2L 2024–2026</div>
-      </div>
-      <div>
-        <div class="profile-label">Resident Type</div>
-        <div class="profile-value">Current</div>
-      </div>
-      <div>
-        <div class="profile-label">Resident Email</div>
-        <div class="profile-value"><a href="mailto:tenery.megan@robbinsvillek12.gov">tenery.megan@<br>robbinsvillek12.gov</a></div>
-      </div>
-      <div>
-        <div class="profile-label">Phone / Cell</div>
-        <div class="profile-value mono"><a href="tel:7322459712">(732) 245-9712</a></div>
-      </div>
-      <div style="grid-column:span 2;">
-        <div class="profile-label">Home Address</div>
-        <div class="profile-value">823 Clifton Street, Lacey Township, NJ 08731</div>
-      </div>
-      <div style="grid-column:span 2;">
-        <div class="profile-label">School Address</div>
-        <div class="profile-value">155 Robbinsville-Edinburg Road, Robbinsville, NJ 08691</div>
-      </div>
-      <div>
-        <div class="profile-label">Mentor</div>
-        <div class="profile-value">Jermaine Kamau</div>
-      </div>
-      <div>
-        <div class="profile-label">Supervisor</div>
-        <div class="profile-value">Lisa Tremer</div>
-      </div>
-      <div>
-        <div class="profile-label">Supervisor Phone</div>
-        <div class="profile-value mono"><a href="tel:6096320910">609-632-0910 x2207</a></div>
-      </div>
-      <div>
-        <div class="profile-label">Supervisor Email</div>
-        <div class="profile-value"><a href="mailto:tremer.lisa@robbinsville.k12.nj.us">tremer.lisa@<br>robbinsville.k12.nj.us</a></div>
-      </div>
-      <div>
-        <div class="profile-label">NJL2L Program Email</div>
-        <div class="profile-value"><a href="mailto:NJL2L@NJPSA.org">NJL2L@NJPSA.org</a></div>
-      </div>
-      <div>
-        <div class="profile-label">District #</div>
-        <div class="profile-value mono">Robbinsville SD #5510</div>
-      </div>
+  <!-- PROGRESS BAR -->
+  <div class="progress-card">
+    <div class="progress-label">
+      <span>24-Month Program Progress — Oct 2024 → Oct 2026</span>
+      <span style="font-weight:700; color:var(--navy)">~83%</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill"></div>
+    </div>
+    <div class="progress-markers">
+      <span>Start · Oct 9, 2024</span>
+      <span>▲ Now · ~Month 20</span>
+      <span>End · Oct 2026</span>
+    </div>
+    <div class="progress-pills">
+      <span class="pill pill-green">✓ Year 1 Complete</span>
+      <span class="pill pill-green">✓ Evals 1–4 Complete</span>
+      <span class="pill pill-blue">◐ ARP Implementation Active</span>
+      <span class="pill pill-amber">Summative Eval · Next Milestone</span>
+      <span class="pill pill-amber">~4 Months Remaining</span>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Hour Requirements Tracker</div>
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+    <div class="stat-card green">
+      <div class="stat-icon">📅</div>
+      <div class="stat-label">Program Month</div>
+      <div class="stat-value">~Mo. 20</div>
+      <div class="stat-sub">Quarter 7 · Year 2</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">⏱</div>
+      <div class="stat-label">Year 2 Hours Required</div>
+      <div class="stat-value">29 hrs</div>
+      <div class="stat-sub">Min. contact hours · Year 2</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-icon">📋</div>
+      <div class="stat-label">Next Milestone</div>
+      <div class="stat-value">Summative Eval</div>
+      <div class="stat-sub">Month 24 · ~Oct 2026</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">💰</div>
+      <div class="stat-label">Mentor Stipend</div>
+      <div class="stat-value">Invoice Ready</div>
+      <div class="stat-sub">Submit via Sample Invoice Template</div>
+    </div>
+  </div>
 
-    <div class="hour-row">
-      <div class="hour-label-row">
+  <!-- PROFILE & HOURS -->
+  <div class="section-header">Resident Profile — Full Record</div>
+  <div class="two-col">
+    <div class="profile-card">
+      <div class="profile-row"><span class="profile-key">Full Name</span><span class="profile-val">Ms. Megan Tenery</span></div>
+      <div class="profile-row"><span class="profile-key">Date of Birth</span><span class="profile-val">January 16, 1983</span></div>
+      <div class="profile-row"><span class="profile-key">Position / Title</span><span class="profile-val">Asst. Director of Curriculum</span></div>
+      <div class="profile-row"><span class="profile-key">Date of Hire</span><span class="profile-val">July 1, 2024</span></div>
+      <div class="profile-row"><span class="profile-key">Tracking #</span><span class="profile-val">80018877</span></div>
+      <div class="profile-row"><span class="profile-key">NJ CE License #</span><span class="profile-val">00728720</span></div>
+      <div class="profile-row"><span class="profile-key">Program Term</span><span class="profile-val">PT-11067</span></div>
+      <div class="profile-row"><span class="profile-key">Start Date</span><span class="profile-val">Oct 9, 2024</span></div>
+      <div class="profile-row"><span class="profile-key">Cohort</span><span class="profile-val">NJL2L 2024–2026</span></div>
+      <div class="profile-row"><span class="profile-key">Resident Email</span><span class="profile-val">tenery.megan@robbinsvillek12.gov</span></div>
+      <div class="profile-row"><span class="profile-key">Phone</span><span class="profile-val">(732) 245-9712</span></div>
+      <div class="profile-row"><span class="profile-key">Home Address</span><span class="profile-val">823 Clifton St, Lacey Township, NJ 08731</span></div>
+      <div class="profile-row"><span class="profile-key">School Address</span><span class="profile-val">155 Robbinsville-Edinburg Rd, NJ 08691</span></div>
+      <div class="profile-row"><span class="profile-key">Mentor</span><span class="profile-val">Jermaine Kamau</span></div>
+      <div class="profile-row"><span class="profile-key">Supervisor</span><span class="profile-val">Lisa Tremer</span></div>
+      <div class="profile-row"><span class="profile-key">Supervisor Phone</span><span class="profile-val">609-632-0910 x2207</span></div>
+      <div class="profile-row"><span class="profile-key">Supervisor Email</span><span class="profile-val">tremer.lisa@robbinsville.k12.nj.us</span></div>
+      <div class="profile-row"><span class="profile-key">NJL2L Program</span><span class="profile-val">NJL2L@NJPSA.org</span></div>
+      <div class="profile-row"><span class="profile-key">District #</span><span class="profile-val">Robbinsville SD #5510</span></div>
+    </div>
+    <div class="hour-card">
+      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--navy); margin-bottom:14px;">Hour Requirements Tracker</div>
+      <div class="hour-row">
         <span class="hour-label">Year 1 Contact Hours (Min. 46)</span>
-        <span class="hour-count" style="color:var(--green);">46 / 46 ✓</span>
+        <span class="hour-badge badge-green">46 / 46 ✓</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:100%;background:var(--green);"></div></div>
-    </div>
-
-    <div class="hour-row">
-      <div class="hour-label-row">
+      <div class="hour-row">
         <span class="hour-label">Year 2 Contact Hours (Min. 29)</span>
-        <span class="hour-count" style="color:var(--amber);">In Progress</span>
+        <span class="hour-badge badge-blue">In Progress</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:65%;background:var(--amber);"></div></div>
-    </div>
-
-    <div class="hour-row">
-      <div class="hour-label-row">
+      <div class="hour-row">
         <span class="hour-label">Mentoring Sessions (Monthly)</span>
-        <span class="hour-count">Ongoing</span>
+        <span class="hour-badge badge-blue">Ongoing</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:70%;background:var(--blue);"></div></div>
-    </div>
-
-    <div class="hour-row">
-      <div class="hour-label-row">
+      <div class="hour-row">
         <span class="hour-label">Peer Support Group</span>
-        <span class="hour-count">Ongoing</span>
+        <span class="hour-badge badge-blue">Ongoing</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:70%;background:var(--blue);"></div></div>
-    </div>
-
-    <div class="hour-row">
-      <div class="hour-label-row">
+      <div class="hour-row">
         <span class="hour-label">NJLA Day 1</span>
-        <span class="hour-count" style="color:var(--green);">Nov 22, 2024 ✓</span>
+        <span class="hour-badge badge-green">Nov 22, 2024 ✓</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:100%;background:var(--green);"></div></div>
-    </div>
-
-    <div class="hour-row">
-      <div class="hour-label-row">
+      <div class="hour-row">
         <span class="hour-label">NJLA Day 2</span>
-        <span class="hour-count" style="color:var(--green);">Dec 18, 2024 ✓</span>
+        <span class="hour-badge badge-green">Dec 18, 2024 ✓</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:100%;background:var(--green);"></div></div>
-    </div>
-
-    <div class="hour-row">
-      <div class="hour-label-row">
+      <div class="hour-row">
         <span class="hour-label">NJLA Day 3</span>
-        <span class="hour-count" style="color:var(--green);">Jan 15, 2025 ✓</span>
+        <span class="hour-badge badge-green">Jan 15, 2025 ✓</span>
       </div>
-      <div class="hour-track"><div class="hour-fill" style="width:100%;background:var(--green);"></div></div>
-    </div>
-
-    <div style="margin-top:14px;padding:10px;background:var(--green-bg);border-radius:7px;border:1px solid #bbf7d0;">
-      <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:3px;">✓ All NJLA Days Complete</div>
-      <div style="font-size:12px;color:var(--slate);">All 3 NJLA sessions confirmed complete in the NJPSA portal. Year 2 contact hours ongoing — verify logged total against 29-hr minimum.</div>
-    </div>
-
-    <div style="margin-top:10px;padding:10px;background:var(--page-bg);border-radius:7px;border:1px solid var(--border);">
-      <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">NJEdCert Status</div>
-      <div style="font-size:12px;">Provisional Request: <strong>Completed</strong> &nbsp;·&nbsp; NJEXCEL: <strong>No</strong> &nbsp;·&nbsp; Out-of-State Cert: <strong>No</strong></div>
+      <div style="margin-top:14px; padding:10px 14px; background:var(--green-light); border-radius:8px; font-size:12px; color:var(--green); font-weight:600;">
+        ✓ All NJLA Days Complete — All 3 confirmed in NJPSA portal.
+      </div>
+      <div style="margin-top:10px; padding:10px 14px; background:var(--blue-light); border-radius:8px; font-size:12px; color:var(--blue-accent);">
+        NJEdCert: Provisional Request Complete · NJEXCEL: No · Out-of-State Cert: No
+      </div>
     </div>
   </div>
+
+  <!-- MILESTONE TIMELINE -->
+  <div class="section-header">Milestone Timeline</div>
+
+  <div class="milestone-section-label">Year 1 Milestones — All Complete ✓</div>
+  <div class="timeline">
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Registration &amp; Enrollment</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Sep 20 – Oct 9, 2024</div>
+        <div class="milestone-note">Registration date Sep 20. Program start Oct 9, 2024. SOA, Board Approval, Job Description filed Oct 1.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">All Primary Documents Submitted</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Oct 1–25, 2024</div>
+        <div class="milestone-note">Residency Agreement, MOU, Year 1 &amp; 2 Plans (Oct 22), Provisional Certificate (Oct 8), Resume (Oct 25). Orientation Oct 21.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">All 3 NJLA Days Attended</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Nov 2024 – Jan 2025</div>
+        <div class="milestone-note">Day 1: Nov 22, 2024 · Day 2: Dec 18, 2024 · Day 3: Jan 15, 2025. All confirmed in NJPSA portal.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Formative Eval #1 — Standards 1, 2&amp;3</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Mar 7, 2025</div>
+        <div class="milestone-note">Mission/Vision (Std 1) + Ethics &amp; Equity (Stds 2&amp;3). Mentor: strong instructional leadership and equity focus. No concerns.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Formative Eval #2 — Standards 4&amp;5</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Sep 11, 2025</div>
+        <div class="milestone-note">Curriculum/Instruction/Assessment + Community of Care. Mentor highlighted LinkIT benchmarks, relational leadership. Signed Sep 3–5.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Year 1 Resident Review (12 months)</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Nov 18, 2025</div>
+        <div class="milestone-note">Formal Year 1 review complete. 46+ contact hours verified. ARP Proposal finalized and locked.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="milestone-section-label">Year 2 Milestones</div>
+  <div class="timeline">
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Year 2 Launch &amp; ARP Implementation</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Oct–Nov 2025</div>
+        <div class="milestone-note">Year 2 contact log re-established. ARP data collection launched. Year 2 elective selected.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Formative Eval #3 — Standards 6&amp;7</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">Mar 13, 2026</div>
+        <div class="milestone-note">Professional Capacity &amp; Professional Community. Mentor praised PLC norms, teacher-led PD, conference participation. No areas of concern. Signed Feb 19, 2026 (document date).</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-green">✓</div>
+      <div class="milestone-card complete">
+        <div class="milestone-top">
+          <div class="milestone-title">Formative Eval #4 — ARP / Standards 8, 9 &amp; 10</div>
+          <span class="milestone-status ms-complete">Complete</span>
+        </div>
+        <div class="milestone-date">June 15, 2026</div>
+        <div class="milestone-note">ARP implementation addressed directly. Standards 8, 9 &amp; 10. Peer Group PowerPoint delivered. Portfolio reflections from all individuals involved submitted. Confirmed complete in NJPSA portal.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-blue">◐</div>
+      <div class="milestone-card in-progress">
+        <div class="milestone-top">
+          <div class="milestone-title">ARP Data Analysis &amp; Findings</div>
+          <span class="milestone-status ms-progress">In Progress</span>
+        </div>
+        <div class="milestone-date">Now — Month 20–24</div>
+        <div class="milestone-note">MTSS/Tier 1 implementation active at middle school. Tier 1 checklist in use. Research questions focused on teacher support continuity.</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-dot dot-gray">○</div>
+      <div class="milestone-card upcoming">
+        <div class="milestone-top">
+          <div class="milestone-title">Summative Evaluation &amp; Certification</div>
+          <span class="milestone-status ms-future">Future</span>
+        </div>
+        <div class="milestone-date">Month 24 · ~Oct 2026</div>
+        <div class="milestone-note">Post self-assessment, summative evaluation, final exit interview. Mentor signs Standard Certificate Recommendation to NJDOE.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DOCUMENT CHECKLIST -->
+  <div class="section-header">Document &amp; Compliance Checklist</div>
+  <div class="checklist-card">
+    <div class="checklist-group-header">Primary &amp; Secondary Documents</div>
+    <div class="checklist-row"><span class="checklist-title">Standard Residency Agreement</span><span class="checklist-date">Oct 22, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Statement of Assurance (SOA)</span><span class="checklist-date">Oct 1, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Memorandum of Understanding</span><span class="checklist-date">Oct 22, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Year 1 Residency Plan</span><span class="checklist-date">Oct 22, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Year 2 Residency Plan</span><span class="checklist-date">Oct 22, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Copy of Board Approval</span><span class="checklist-date">Oct 1, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Current Job Description</span><span class="checklist-date">Oct 1, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Provisional Certificate</span><span class="checklist-date">Oct 8, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Resident Resume</span><span class="checklist-date">Oct 25, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Reduced Residency (Admin Flag)</span><span class="checklist-date">Not applicable</span><span class="check-icon" style="color:#9ca3af;">N/A</span></div>
+
+    <div class="checklist-group-header">Evaluations, NJLA &amp; ARP</div>
+    <div class="checklist-row"><span class="checklist-title">Resident Orientation</span><span class="checklist-date">Oct 21, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">NJLA Day 1</span><span class="checklist-date">Nov 22, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">NJLA Day 2</span><span class="checklist-date">Dec 18, 2024</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">NJLA Day 3</span><span class="checklist-date">Jan 15, 2025</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">5-Month Formative Eval (#1) — Stds 1 + 2&amp;3</span><span class="checklist-date">Mar 7, 2025</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">10-Month Formative Eval (#2) — Stds 4&amp;5</span><span class="checklist-date">Sep 11, 2025</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">Year 1 Resident Review (12 months)</span><span class="checklist-date">Nov 18, 2025</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">15-Month Formative Eval (#3) — Stds 6&amp;7</span><span class="checklist-date">Mar 13, 2026</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row" style="background:#f0fdf4;"><span class="checklist-title" style="font-weight:600; color:var(--green);">20-Month Formative Eval (#4) — Stds 8, 9 &amp; 10 / ARP</span><span class="checklist-date" style="color:var(--green); font-weight:600;">Jun 15, 2026</span><span class="check-icon">✅</span></div>
+    <div class="checklist-row"><span class="checklist-title">ARP — Implementation Active (MTSS / Tier 1)</span><span class="checklist-date">Ongoing</span><span class="check-icon">🔄</span></div>
+    <div class="checklist-row"><span class="checklist-title">Summative Evaluation (24 months)</span><span class="checklist-date">~Oct 2026</span><span class="check-icon" style="color:#9ca3af;">○</span></div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section-header">Immediate Action Items</div>
+  <div class="action-grid">
+
+    <div class="action-card moderate">
+      <div class="action-title">Finalize ARP Data Analysis</div>
+      <div class="action-desc">Consolidate Tier 1 checklist data, small-group PD outcomes, and teacher support documentation. Measure impact per research questions. Required for Summative Evaluation.</div>
+      <span class="action-tag tag-moderate">Urgent — Months 21–24</span>
+    </div>
+
+    <div class="action-card ongoing">
+      <div class="action-title">Verify Year 2 Contact Hours Total</div>
+      <div class="action-desc">Log all monthly mentor contact hours and confirm total meets 29-hr Year 2 minimum. Update monthly meeting log regularly.</div>
+      <span class="action-tag tag-ongoing">Ongoing — Verify Current Total</span>
+    </div>
+
+    <div class="action-card ongoing">
+      <div class="action-title">Continue Peer Support Group Participation</div>
+      <div class="action-desc">Ongoing Year 2 requirement. Engage with Critical Friends Network for ARP findings. Log all Peer Group sessions through program close.</div>
+      <span class="action-tag tag-ongoing">Ongoing · All Year 2</span>
+    </div>
+
+    <div class="action-card future">
+      <div class="action-title">Begin Transition Planning (Months 22–24)</div>
+      <div class="action-desc">Plan for sustainable administration after ARP. Collect mentor and resident program reflections. Prepare for summative evaluation and NJDOE certification recommendation.</div>
+      <span class="action-tag tag-future">Planned — Months 22–24</span>
+    </div>
+
+    <div class="action-card future">
+      <div class="action-title">Summative Evaluation Preparation</div>
+      <div class="action-desc">Post self-assessment, summative evaluation, and final exit interview. Mentor to sign Standard Certificate Recommendation to NJDOE upon successful completion.</div>
+      <span class="action-tag tag-future">~Oct 2026 · Month 24</span>
+    </div>
+
+  </div>
+
+  <!-- ARP SECTION -->
+  <div class="section-header">Action Research Project (ARP) Focus</div>
+  <div class="arp-grid">
+    <div class="arp-card">
+      <div class="arp-card-title">Identified Barriers (Year 1)</div>
+      <div class="arp-item"><span class="arp-check">✓</span>MTSS Redesign — No funding, must be creative</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Tier 1 Instructional Focus — Middle school level</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Small-Group Instruction PD — Teacher professional development</div>
+    </div>
+    <div class="arp-card">
+      <div class="arp-card-title">Research Focus &amp; Methods</div>
+      <div class="arp-item"><span class="arp-check">•</span>Primary barrier: MTSS with no funding</div>
+      <div class="arp-item"><span class="arp-check">•</span>Focus: MS Tier 1 &amp; Tier 2 practices</div>
+      <div class="arp-item"><span class="arp-check">•</span>Tool: Tier 1 checklist with strategies</div>
+      <div class="arp-item"><span class="arp-check">•</span>Data collection methods identified</div>
+      <div class="arp-item"><span class="arp-check">•</span>Key question: How will teachers continue the work?</div>
+      <div class="arp-item"><span class="arp-check">•</span>Connection to school improvement (Standard 10)</div>
+    </div>
+    <div class="arp-card">
+      <div class="arp-card-title">ARP Requirements Checklist</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Mandatory Year 2 component</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Planned, implemented &amp; evaluated</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Job-embedded</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Proposal approved — implementation active</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Formative Eval #4 addressed ARP — Complete</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Peer Group PowerPoint presented</div>
+      <div class="arp-item"><span class="arp-check">✓</span>Portfolio reflections submitted</div>
+      <div class="arp-item"><span class="arp-check-empty">○</span>Summative Eval — ARP final report</div>
+      <div class="arp-item"><span class="arp-check-empty">○</span>Target rating: Proficient</div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ══ TIMELINE ══ -->
-<div class="section-header"><h2>Milestone Timeline</h2><div class="section-divider"></div></div>
-<div class="grid-2">
-  <div class="card">
-    <div class="card-title">Year 1 Milestones — All Complete ✓</div>
-    <div class="timeline">
-      <div class="timeline-line"></div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Registration &amp; Enrollment</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Sep 20 – Oct 9, 2024</div>
-        <div class="tl-desc">Registration date Sep 20. Program start Oct 9, 2024. SOA, Board Approval, Job Description filed Oct 1.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">All Primary Documents Submitted</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Oct 1–25, 2024</div>
-        <div class="tl-desc">Residency Agreement, MOU, Year 1 &amp; 2 Plans (Oct 22), Provisional Certificate (Oct 8), Resume (Oct 25). Orientation Oct 21.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">All 3 NJLA Days Attended</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Nov 2024 – Jan 2025</div>
-        <div class="tl-desc">Day 1: Nov 22, 2024 · Day 2: Dec 18, 2024 · Day 3: Jan 15, 2025. All confirmed in NJPSA portal.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Formative Eval #1 — Standards 1, 2&amp;3</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Mar 7, 2025</div>
-        <div class="tl-desc">Mission/Vision (Std 1) + Ethics &amp; Equity (Stds 2&amp;3). Mentor: strong instructional leadership and equity focus. No concerns.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Formative Eval #2 — Standards 4&amp;5</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Sep 11, 2025</div>
-        <div class="tl-desc">Curriculum/Instruction/Assessment + Community of Care. Mentor highlighted LinkIT benchmarks, relational leadership. Signed Sep 3–5.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Year 1 Resident Review (12 months)</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Nov 18, 2025</div>
-        <div class="tl-desc">Formal Year 1 review complete. 46+ contact hours verified. ARP Proposal finalized and locked.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Year 2 Milestones</div>
-    <div class="timeline">
-      <div class="timeline-line"></div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Year 2 Launch &amp; ARP Implementation</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Oct–Nov 2025</div>
-        <div class="tl-desc">Year 2 contact log re-established. ARP data collection launched. Year 2 elective selected.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--green);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Formative Eval #3 — Standards 6&amp;7</span><span class="badge badge-green">Complete</span></div>
-        <div class="tl-date">Mar 13, 2026</div>
-        <div class="tl-desc">Professional Capacity &amp; Professional Community. Mentor praised PLC norms, teacher-led PD, conference participation. No areas of concern. Signed Feb 19, 2026 (document date).</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--amber);"></div></div>
-        <div class="tl-heading"><span class="tl-title">ARP Data Analysis &amp; Findings</span><span class="badge badge-amber">In Progress</span></div>
-        <div class="tl-date">Now — Month 19–20</div>
-        <div class="tl-desc">MTSS/Tier 1 implementation active at middle school. Tier 1 checklist in use. Research questions focused on teacher support continuity.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--red);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Formative Eval #4 — ARP / Standards</span><span class="badge badge-red">Due Now</span></div>
-        <div class="tl-date">Month 20 · Overdue Zone</div>
-        <div class="tl-desc">Must address ARP directly. Select standards (4&5 or Std 10). Peer Group PowerPoint required. Portfolio: reflections from all individuals involved.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--blue);"></div></div>
-        <div class="tl-heading"><span class="tl-title">ARP Peer Group Presentation</span><span class="badge badge-blue">Upcoming</span></div>
-        <div class="tl-date">Month 19–21</div>
-        <div class="tl-desc">Resident delivers ARP PowerPoint to Peer Group. Critical Friends Network pitch of early findings. Begin transition planning.</div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--gray);"></div></div>
-        <div class="tl-heading"><span class="tl-title">Summative Evaluation &amp; Certification</span><span class="badge badge-gray">Future</span></div>
-        <div class="tl-date">Month 24 · ~Oct 2026</div>
-        <div class="tl-desc">Post self-assessment, summative evaluation, final exit interview. Mentor signs Standard Certificate Recommendation to NJDOE.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ CHECKLIST ══ -->
-<div class="section-header"><h2>Document &amp; Compliance Checklist</h2><div class="section-divider"></div></div>
-<div class="grid-2">
-  <div class="card">
-    <div class="card-title">Primary &amp; Secondary Documents</div>
-    <div class="checklist">
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Standard Residency Agreement</div><div class="check-detail">Complete · Oct 22, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Statement of Assurance (SOA)</div><div class="check-detail">Complete · Oct 1, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Memorandum of Understanding</div><div class="check-detail">Complete · Oct 22, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Year 1 Residency Plan</div><div class="check-detail">Complete · Oct 22, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Year 2 Residency Plan</div><div class="check-detail">Complete · Oct 22, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Copy of Board Approval</div><div class="check-detail">Complete · Oct 1, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Current Job Description</div><div class="check-detail">Complete · Oct 1, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Provisional Certificate</div><div class="check-detail">Complete · Oct 8, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Resident Resume</div><div class="check-detail">Complete · Oct 25, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-gray"></span><div><div class="check-name">Reduced Residency (Admin Flag)</div><div class="check-detail">Not applicable</div></div></div>
-        <span class="badge badge-gray">N/A</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Evaluations, NJLA &amp; ARP</div>
-    <div class="checklist">
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Resident Orientation</div><div class="check-detail">Complete · Oct 21, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">NJLA Day 1</div><div class="check-detail">Complete · Nov 22, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">NJLA Day 2</div><div class="check-detail">Complete · Dec 18, 2024</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">NJLA Day 3</div><div class="check-detail">Complete · Jan 15, 2025</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">5-Month Formative Eval (#1)</div><div class="check-detail">Stds 1 + 2&3 · Mar 7, 2025</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">10-Month Formative Eval (#2)</div><div class="check-detail">Stds 4&5 · Sep 11, 2025</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">Year 1 Resident Review (12 months)</div><div class="check-detail">Nov 18, 2025</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-green"></span><div><div class="check-name">15-Month Formative Eval (#3)</div><div class="check-detail">Stds 6&7 · Mar 13, 2026</div></div></div>
-        <span class="badge badge-green">✓ Done</span>
-      </div>
-      <div class="check-item" style="border-color:var(--red);background:#fff5f5;">
-        <div class="check-left"><span class="dot dot-red"></span><div><div class="check-name">20-Month Formative Eval (#4)</div><div class="check-detail">ARP Focus · Month 20 · DUE NOW</div></div></div>
-        <span class="badge badge-red">⚠ Due Now</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-amber"></span><div><div class="check-name">ARP — Implementation Active</div><div class="check-detail">MTSS / Tier 1 Focus · Proposal Approved</div></div></div>
-        <span class="badge badge-amber">In Progress</span>
-      </div>
-      <div class="check-item">
-        <div class="check-left"><span class="dot dot-gray"></span><div><div class="check-name">Summative Evaluation (24 months)</div><div class="check-detail">~Oct 2026</div></div></div>
-        <span class="badge badge-gray">Future</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ ACTION ITEMS ══ -->
-<div class="section-header"><h2>Immediate Action Items</h2><div class="section-divider"></div></div>
-<div class="grid-2">
-  <div class="action-list">
-    <div class="action-item red">
-      <div class="dot dot-red" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Complete Formative Evaluation #4</div>
-        <div class="action-desc">Must address ARP directly. Select PSEL standards (4&5 or Standard 10). Reflection ≥1 page, include 1 artifact + 1 article/reading. Submit to NJL2L@NJPSA.org.</div>
-        <div class="action-due red">🔴 OVERDUE ZONE — Month 20</div>
-      </div>
-    </div>
-    <div class="action-item red">
-      <div class="dot dot-red" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Deliver ARP Peer Group Presentation</div>
-        <div class="action-desc">Required PowerPoint for Peer Group. Include reflections from all individuals involved. Portfolio artifact for leadership portfolio.</div>
-        <div class="action-due red">🔴 Month 19–21 · Act Now</div>
-      </div>
-    </div>
-    <div class="action-item amber">
-      <div class="dot dot-amber" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Finalize ARP Data Analysis</div>
-        <div class="action-desc">Consolidate Tier 1 checklist data, small-group PD outcomes, and teacher support documentation. Measure impact per research questions.</div>
-        <div class="action-due amber">⚠ Urgent — Needed for Eval #4</div>
-      </div>
-    </div>
-    <div class="action-item amber">
-      <div class="dot dot-amber" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Identify ARP Article / Reading Citation</div>
-        <div class="action-desc">Eval #4 must reference one article/reading submitted to mentor. Mentor noted: weave professional research or theory into reflections. Submit to mentor.</div>
-        <div class="action-due amber">⚠ Urgent — Before Eval #4 submission</div>
-      </div>
-    </div>
-  </div>
-  <div class="action-list">
-    <div class="action-item amber">
-      <div class="dot dot-amber" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Identify &amp; Submit Artifact for Eval #4</div>
-        <div class="action-desc">Reflection must include at least one artifact submitted to mentor for inclusion in leadership portfolio. Select an artifact tied to ARP work.</div>
-        <div class="action-due amber">⚠ Urgent — Required for Eval #4</div>
-      </div>
-    </div>
-    <div class="action-item blue">
-      <div class="dot dot-blue" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Verify Year 2 Contact Hours Total</div>
-        <div class="action-desc">Log all monthly mentor contact hours and confirm total meets 29-hr Year 2 minimum. Update monthly meeting log weekly.</div>
-        <div class="action-due blue">📅 Ongoing — Verify current total</div>
-      </div>
-    </div>
-    <div class="action-item blue">
-      <div class="dot dot-blue" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Continue Peer Support Group Participation</div>
-        <div class="action-desc">Ongoing Year 2 requirement. Engage with Critical Friends Network for ARP pitch. Log all Peer Group sessions.</div>
-        <div class="action-due blue">📅 Ongoing · All Year 2</div>
-      </div>
-    </div>
-    <div class="action-item gray">
-      <div class="dot dot-gray" style="margin-top:4px;flex-shrink:0;"></div>
-      <div>
-        <div class="action-title">Begin Transition Planning (Month 22–24)</div>
-        <div class="action-desc">Plan for sustainable administration after ARP. Collect mentor &amp; resident program reflections. Prepare for summative evaluation and NJDOE certification recommendation.</div>
-        <div class="action-due" style="color:var(--gray);font-family:'DM Mono',monospace;font-size:10px;margin-top:3px;">📅 Planned — Months 22–24</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ ARP PANEL ══ -->
-<div class="section-header"><h2>Action Research Project (ARP) Focus</h2><div class="section-divider"></div></div>
-<div class="card">
-  <div style="display:flex;gap:0;">
-    <div class="arp-col" style="flex:1;">
-      <div class="card-title">Identified Barriers (Year 1)</div>
-      <div class="arp-barrier">MTSS Redesign<br><span style="font-weight:400;font-size:11px;color:var(--amber);">No funding — must be creative</span></div>
-      <div class="arp-barrier">Tier 1 Instructional Focus<br><span style="font-weight:400;font-size:11px;color:var(--amber);">Middle school level</span></div>
-      <div class="arp-barrier">Small-Group Instruction PD<br><span style="font-weight:400;font-size:11px;color:var(--amber);">Teacher professional development</span></div>
-    </div>
-    <div class="arp-col" style="flex:1;">
-      <div class="card-title">Research Focus &amp; Methods</div>
-      <div class="arp-point">• Primary barrier: MTSS with no funding</div>
-      <div class="arp-point">• Focus: MS Tier 1 &amp; Tier 2 practices</div>
-      <div class="arp-point">• Tool: Tier 1 checklist with strategies</div>
-      <div class="arp-point">• Data collection methods identified</div>
-      <div class="arp-point">• Focused research questions confirmed</div>
-      <div class="arp-point">• Key question: How will teachers continue the work?</div>
-      <div class="arp-point">• Connection to school improvement (Standard 10)</div>
-    </div>
-    <div class="arp-col" style="flex:1;">
-      <div class="card-title">ARP Requirements Checklist</div>
-      <div class="arp-point">✓ Mandatory Year 2 component</div>
-      <div class="arp-point">✓ Must be planned, implemented &amp; evaluated</div>
-      <div class="arp-point">✓ Must be job-embedded</div>
-      <div class="arp-point">✓ Proposal approved — implementation active</div>
-      <div class="arp-point">⬜ Formative Eval #4 must address ARP directly</div>
-      <div class="arp-point">⬜ Peer Group PowerPoint presentation</div>
-      <div class="arp-point">⬜ Portfolio: reflections from all involved</div>
-      <div class="arp-point">⬜ Target rating: Proficient</div>
-      <div class="arp-point">⬜ PSEL standards selected for Eval #4</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ FOOTER ══ -->
+<!-- FOOTER -->
 <div class="footer">
-  <div><strong>Ms. Megan Tenery</strong> &nbsp;·&nbsp; Tracking #80018877 &nbsp;·&nbsp; CE License #00728720 &nbsp;·&nbsp; PT-11067</div>
-  <div>Mentor: <strong>Jermaine Kamau</strong> &nbsp;·&nbsp; Supervisor: <strong>Lisa Tremer</strong> &nbsp;·&nbsp; <a href="mailto:NJL2L@NJPSA.org">NJL2L@NJPSA.org</a></div>
-  <div>Generated: June 5, 2026</div>
+  <strong>Ms. Megan Tenery</strong> · Tracking #80018877 · CE License #00728720 · PT-11067<br>
+  Mentor: <strong>Jermaine Kamau</strong> · Supervisor: <strong>Lisa Tremer</strong> · NJL2L@NJPSA.org<br>
+  <span style="margin-top:6px; display:inline-block; font-size:11px;">Generated: June 22, 2026</span>
 </div>
 
-</div>
 </body>
 </html>
